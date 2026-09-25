@@ -5,7 +5,7 @@ import { Analytics } from "@vercel/analytics/next";
 import { ThemeProvider } from "next-themes";
 import ScrollEffects from "@/components/ScrollEffects";
 import appleTouchIcon from "./apple-touch-icon.png";
-import dabeMark from "./dabe-mark.png";
+import appIcon from "./icon.png";
 import "./globals.css";
 
 const inter = Inter({
@@ -86,7 +86,7 @@ export const metadata: Metadata = {
   },
 
   icons: {
-    icon: [{ url: dabeMark.src, sizes: "512x512", type: "image/png" }],
+    icon: [{ url: appIcon.src, sizes: "1254x1254", type: "image/png" }],
     apple: [{ url: appleTouchIcon.src, sizes: "180x180", type: "image/png" }],
   },
 
