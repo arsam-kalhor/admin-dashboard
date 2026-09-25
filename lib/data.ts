@@ -29,9 +29,12 @@ const usersFilePath = join(
   "users.json",
 );
 
-export async function getUsers(): Promise<
-  User[]
-> {
+export async function getUsers(): Promise<User[]> {
+  console.log(
+    "[USERS] Reading fresh users:",
+    new Date().toISOString(),
+  );
+
   try {
     const contents =
       await readFile(
@@ -39,12 +42,9 @@ export async function getUsers(): Promise<
         "utf8",
       );
 
-    const users =
-      JSON.parse(
-        contents,
-      ) as User[];
-
-    return users;
+    return JSON.parse(
+      contents,
+    ) as User[];
   } catch (error) {
     console.error(
       "Failed to load users:",

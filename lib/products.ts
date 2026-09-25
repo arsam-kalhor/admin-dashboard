@@ -17,9 +17,12 @@ const productsFilePath = join(
   "products.json",
 );
 
-export async function getProducts(): Promise<
-  Product[]
-> {
+export async function getProducts(): Promise<Product[]> {
+  console.log(
+    "[PRODUCTS] Reading fresh products:",
+    new Date().toISOString(),
+  );
+
   try {
     const contents =
       await readFile(
@@ -27,12 +30,9 @@ export async function getProducts(): Promise<
         "utf8",
       );
 
-    const products =
-      JSON.parse(
-        contents,
-      ) as Product[];
-
-    return products;
+    return JSON.parse(
+      contents,
+    ) as Product[];
   } catch (error) {
     console.error(
       "Failed to load products:",

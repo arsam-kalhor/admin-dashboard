@@ -75,9 +75,9 @@ export default async function EditUserPage({
 
       {/* Hero */}
       <section className="relative overflow-hidden rounded-3xl border bg-card">
-        <div className="pointer-events-none absolute -right-24 -top-24 size-80 rounded-full bg-primary/10 blur-3xl" />
+        <div data-scroll-parallax="18" className="pointer-events-none absolute -right-24 -top-24 size-80 rounded-full bg-primary/10 blur-3xl" />
 
-        <div className="pointer-events-none absolute -bottom-32 left-1/3 size-72 rounded-full bg-primary/5 blur-3xl" />
+        <div data-scroll-parallax="-12" className="pointer-events-none absolute -bottom-32 left-1/3 size-72 rounded-full bg-primary/5 blur-3xl" />
 
         <div className="relative px-6 py-7 md:px-8 md:py-8">
           <div className="flex flex-col justify-between gap-6 lg:flex-row lg:items-center">

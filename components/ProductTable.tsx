@@ -17,6 +17,7 @@ import DataTable, {
 } from "@/components/DataTable";
 
 import ProductActions from "@/components/ProductActions";
+import ProductPagination from "@/components/ProductPagination";
 
 import {
   Badge,
@@ -24,10 +25,17 @@ import {
 
 type ProductTableProps = {
   products: Product[];
+  pagination: {
+    currentPage: number;
+    totalPages: number;
+    totalItems: number;
+    pageSize: number;
+  };
 };
 
 export default function ProductTable({
   products,
+  pagination,
 }: ProductTableProps) {
   const columns: DataTableColumn<Product>[] = [
     {
@@ -154,7 +162,7 @@ export default function ProductTable({
 
           <span className="text-xs font-medium text-muted-foreground">
             {
-              products.length
+              pagination.totalItems
             }{" "}
             products
           </span>
@@ -178,20 +186,21 @@ export default function ProductTable({
           <EmptyProducts />
         }
         footer={
-          <div className="flex items-center justify-between border-t bg-muted/10 px-6 py-4">
+          <div className="flex flex-col gap-3 border-t bg-muted/10 px-6 py-4 sm:flex-row sm:items-center sm:justify-between">
             <p className="text-xs text-muted-foreground">
               Showing{" "}
               <span className="font-medium text-foreground">
-                {
-                  products.length
-                }
+                {pagination.totalItems === 0
+                  ? "0"
+                  : `${(pagination.currentPage - 1) * pagination.pageSize + 1}–${(pagination.currentPage - 1) * pagination.pageSize + products.length}`}
               </span>{" "}
-              products
+              of {pagination.totalItems} products
             </p>
 
-            <p className="text-xs text-muted-foreground">
-              Product Management
-            </p>
+            <ProductPagination
+              currentPage={pagination.currentPage}
+              totalPages={pagination.totalPages}
+            />
           </div>
         }
       />

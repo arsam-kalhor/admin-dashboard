@@ -155,3 +155,26 @@
     cursor: pointer;
   }
 }
+
+/* Route sections and streamed cards enter as they reach the viewport. */
+.scroll-progress {
+  position: fixed;
+  inset: 0 0 auto;
+  z-index: 100;
+  height: 3px;
+  pointer-events: none;
+  background: linear-gradient(90deg, #10b981, #38bdf8 58%, #a78bfa);
+  box-shadow: 0 0 16px rgb(56 189 248 / 45%);
+  transform: scaleX(0);
+  transform-origin: left center;
+  opacity: 0;
+  transition: opacity 180ms ease;
+}
+
+.scroll-progress[data-scrollable="true"] {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scroll-progress { display: none; }
+}

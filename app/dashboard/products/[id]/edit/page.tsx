@@ -84,7 +84,7 @@ export default async function EditProductPage({
 
       {/* Hero */}
       <section className="relative overflow-hidden rounded-3xl border bg-card">
-        <div className="pointer-events-none absolute -right-24 -top-24 size-72 rounded-full bg-primary/10 blur-3xl" />
+        <div data-scroll-parallax="18" className="pointer-events-none absolute -right-24 -top-24 size-72 rounded-full bg-primary/10 blur-3xl" />
 
         <div className="relative px-7 py-8 lg:px-9 lg:py-9">
           <div className="flex items-start gap-4">

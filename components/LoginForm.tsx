@@ -90,6 +90,7 @@ export default function LoginForm({
       >
         {/* Main Card */}
         <div
+          data-scroll-reveal="card"
           className="
             grid
             w-full

@@ -248,7 +248,7 @@ function FormSection({
   children: React.ReactNode;
 }) {
   return (
-    <section className="rounded-2xl border bg-card">
+    <section data-scroll-reveal="card" className="rounded-2xl border bg-card">
       <div className="border-b px-6 py-5">
         <div className="flex items-center gap-3">
           <div className="flex size-10 items-center justify-center rounded-xl border bg-muted/40">

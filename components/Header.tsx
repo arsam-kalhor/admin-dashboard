@@ -2,10 +2,11 @@
 
 import {
   Bell,
-  Check,
   LayoutDashboard,
   LogOut,
   Moon,
+  Package,
+  PackagePlus,
   Search,
   Settings,
   Sun,
@@ -13,6 +14,7 @@ import {
   Users,
 } from "lucide-react";
 import { useTheme } from "next-themes";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -35,15 +37,101 @@ import { logoutAction } from "@/lib/auth";
 import {
   Command,
   CommandDialog,
-  CommandEmpty,
   CommandGroup,
   CommandInput,
   CommandItem,
   CommandList,
 } from "@/components/ui/command";
 
+type SearchResults = {
+  users: { id: number; name: string; email: string }[];
+  products: { id: number; name: string; category: string }[];
+};
+
+const emptyResults: SearchResults = { users: [], products: [] };
+
+const destinations = [
+  { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
+  { label: "Users", href: "/dashboard/users", icon: Users },
+  { label: "Products", href: "/dashboard/products", icon: Package },
+];
+
+const actions = [
+  { label: "Create new user", href: "/dashboard/users/create", icon: User },
+  { label: "Add new product", href: "/dashboard/products/create", icon: PackagePlus },
+];
+
 export default function Header() {
+  const router = useRouter();
   const [searchOpen, setSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState<SearchResults>(emptyResults);
+  const [searchLoading, setSearchLoading] = useState(false);
+  const [searchError, setSearchError] = useState(false);
+
+  const normalizedQuery = searchQuery.trim().toLowerCase();
+  const matchingDestinations = destinations.filter(({ label }) =>
+    label.toLowerCase().includes(normalizedQuery),
+  );
+  const matchingActions = actions.filter(({ label }) =>
+    label.toLowerCase().includes(normalizedQuery),
+  );
+
+  useEffect(() => {
+    if (!searchOpen || !normalizedQuery) {
+      return;
+    }
+
+    const controller = new AbortController();
+    const timer = window.setTimeout(async () => {
+      setSearchLoading(true);
+      setSearchError(false);
+
+      try {
+        const response = await fetch(`/api/search?q=${encodeURIComponent(normalizedQuery)}`, {
+          signal: controller.signal,
+        });
+
+        if (!response.ok) {
+          throw new Error("Search failed");
+        }
+
+        const results = (await response.json()) as SearchResults;
+        if (!controller.signal.aborted) {
+          setSearchResults(results);
+        }
+      } catch {
+        if (!controller.signal.aborted) {
+          setSearchResults(emptyResults);
+          setSearchError(true);
+        }
+      } finally {
+        if (!controller.signal.aborted) {
+          setSearchLoading(false);
+        }
+      }
+    }, 200);
+
+    return () => {
+      window.clearTimeout(timer);
+      controller.abort();
+    };
+  }, [searchOpen, normalizedQuery]);
+
+  function navigateTo(href: string) {
+    handleSearchOpenChange(false);
+    router.push(href);
+  }
+
+  function handleSearchOpenChange(open: boolean) {
+    setSearchOpen(open);
+    if (!open) {
+      setSearchQuery("");
+      setSearchResults(emptyResults);
+      setSearchLoading(false);
+      setSearchError(false);
+    }
+  }
 
   const { resolvedTheme, setTheme } = useTheme();
 
@@ -53,7 +141,13 @@ export default function Header() {
         event.preventDefault();
         event.stopPropagation();
 
-        setSearchOpen((prev) => !prev);
+        setSearchOpen(!searchOpen);
+        if (searchOpen) {
+          setSearchQuery("");
+          setSearchResults(emptyResults);
+          setSearchLoading(false);
+          setSearchError(false);
+        }
       }
     };
 
@@ -62,7 +156,7 @@ export default function Header() {
     return () => {
       window.removeEventListener("keydown", handleKeyDown, true);
     };
-  }, []);
+  }, [searchOpen]);
 
   const toggleTheme = () => {
     setTheme(resolvedTheme === "dark" ? "light" : "dark");
@@ -286,41 +380,86 @@ export default function Header() {
       </header>
 
       {/* Search Dialog */}
-      <CommandDialog open={searchOpen} onOpenChange={setSearchOpen}>
-        <Command>
-          <CommandInput placeholder="Search pages, users, products..." />
+      <CommandDialog open={searchOpen} onOpenChange={handleSearchOpenChange}>
+        <Command shouldFilter={false}>
+          <CommandInput
+            value={searchQuery}
+            onValueChange={(value) => {
+              setSearchQuery(value);
+              setSearchResults(emptyResults);
+              setSearchError(false);
+              setSearchLoading(Boolean(value.trim()));
+            }}
+            placeholder="Search pages, users, products..."
+            aria-label="Search pages, users, and products"
+          />
 
           <CommandList>
-            <CommandEmpty>No results found.</CommandEmpty>
+            {matchingDestinations.length > 0 && (
+              <CommandGroup heading="Navigation">
+                {matchingDestinations.map(({ label, href, icon: Icon }) => (
+                  <CommandItem key={href} value={href} onSelect={() => navigateTo(href)}>
+                    <Icon className="size-4" />
+                    {label}
+                  </CommandItem>
+                ))}
+              </CommandGroup>
+            )}
 
-            <CommandGroup heading="Navigation">
-              <CommandItem>
-                <LayoutDashboard className="size-4" />
-                Dashboard
-              </CommandItem>
+            {matchingActions.length > 0 && (
+              <CommandGroup heading="Actions">
+                {matchingActions.map(({ label, href, icon: Icon }) => (
+                  <CommandItem key={href} value={href} onSelect={() => navigateTo(href)}>
+                    <Icon className="size-4" />
+                    {label}
+                  </CommandItem>
+                ))}
+              </CommandGroup>
+            )}
 
-              <CommandItem>
-                <Users className="size-4" />
-                Users
-              </CommandItem>
+            {searchResults.users.length > 0 && (
+              <CommandGroup heading="Users">
+                {searchResults.users.map((user) => (
+                  <CommandItem
+                    key={user.id}
+                    value={`user-${user.id}`}
+                    onSelect={() => navigateTo(`/dashboard/users/${user.id}`)}
+                  >
+                    <User className="size-4" />
+                    <span className="min-w-0 truncate">{user.name}</span>
+                    <span className="ml-auto truncate text-xs text-muted-foreground">{user.email}</span>
+                  </CommandItem>
+                ))}
+              </CommandGroup>
+            )}
 
-              <CommandItem>
-                <Settings className="size-4" />
-                Settings
-              </CommandItem>
-            </CommandGroup>
+            {searchResults.products.length > 0 && (
+              <CommandGroup heading="Products">
+                {searchResults.products.map((product) => (
+                  <CommandItem
+                    key={product.id}
+                    value={`product-${product.id}`}
+                    onSelect={() => navigateTo(`/dashboard/products/${product.id}`)}
+                  >
+                    <Package className="size-4" />
+                    <span className="min-w-0 truncate">{product.name}</span>
+                    <span className="ml-auto truncate text-xs text-muted-foreground">{product.category}</span>
+                  </CommandItem>
+                ))}
+              </CommandGroup>
+            )}
 
-            <CommandGroup heading="Actions">
-              <CommandItem>
-                <Check className="size-4" />
-                Create new user
-              </CommandItem>
-
-              <CommandItem>
-                <Check className="size-4" />
-                Add new product
-              </CommandItem>
-            </CommandGroup>
+            {normalizedQuery && searchLoading && (
+              <p className="px-3 py-4 text-sm text-muted-foreground" role="status">Searching...</p>
+            )}
+            {normalizedQuery && searchError && (
+              <p className="px-3 py-4 text-sm text-destructive" role="alert">Search is unavailable. Please try again.</p>
+            )}
+            {normalizedQuery && !searchLoading && !searchError &&
+              matchingDestinations.length === 0 && matchingActions.length === 0 &&
+              searchResults.users.length === 0 && searchResults.products.length === 0 && (
+                <p className="px-3 py-4 text-sm text-muted-foreground">No results found.</p>
+              )}
           </CommandList>
         </Command>
       </CommandDialog>

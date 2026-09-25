@@ -82,6 +82,10 @@ export async function createProduct(
     "/dashboard/products",
   );
 
+  revalidatePath(
+    "/dashboard",
+  );
+
   redirect(
     "/dashboard/products",
   );
@@ -144,6 +148,10 @@ export async function updateProduct(
 
   revalidatePath(
     `/dashboard/products/${productId}`,
+  );
+
+  revalidatePath(
+    "/dashboard",
   );
 
   redirect(

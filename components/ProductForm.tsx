@@ -223,7 +223,7 @@ export default function ProductForm({
       )}
 
       {/* Basic Information */}
-      <div className="rounded-2xl border bg-card">
+      <div data-scroll-reveal="card" className="rounded-2xl border bg-card">
         <FormSectionHeader
           icon={Package}
           title="Product Information"
@@ -411,7 +411,7 @@ export default function ProductForm({
       </div>
 
       {/* Inventory */}
-      <div className="rounded-2xl border bg-card">
+      <div data-scroll-reveal="card" className="rounded-2xl border bg-card">
         <FormSectionHeader
           icon={Boxes}
           title="Inventory & Availability"

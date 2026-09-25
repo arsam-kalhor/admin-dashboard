@@ -28,7 +28,8 @@ export default function StatCard({
   const isPositive = trend === "up";
 
   return (
-    <Card className="group relative overflow-hidden border-border/70 bg-card/70 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-border hover:shadow-md">
+    <Card data-scroll-reveal="card" className="group relative overflow-hidden border-border/70 bg-card/70 shadow-sm transition-[border-color,box-shadow] duration-300 hover:border-border hover:shadow-lg">
+      <div data-scroll-parallax="14" className="pointer-events-none absolute -right-8 -top-8 size-24 rounded-full bg-sky-500/10 blur-2xl" />
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
         <CardTitle className="text-sm font-medium text-muted-foreground">
           {title}

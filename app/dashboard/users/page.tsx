@@ -163,9 +163,9 @@ export default async function UsersPage({
     <main className="space-y-8">
       {/* Hero */}
       <section className="relative overflow-hidden rounded-3xl border bg-card">
-        <div className="pointer-events-none absolute -right-24 -top-24 size-72 rounded-full bg-primary/10 blur-3xl" />
+        <div data-scroll-parallax="18" className="pointer-events-none absolute -right-24 -top-24 size-72 rounded-full bg-primary/10 blur-3xl" />
 
-        <div className="pointer-events-none absolute -bottom-32 left-1/3 size-64 rounded-full bg-primary/5 blur-3xl" />
+        <div data-scroll-parallax="-12" className="pointer-events-none absolute -bottom-32 left-1/3 size-64 rounded-full bg-primary/5 blur-3xl" />
 
         <div className="relative px-7 py-8 lg:px-9 lg:py-9">
           <div className="flex flex-col justify-between gap-6 lg:flex-row lg:items-center">
@@ -247,6 +247,7 @@ export default async function UsersPage({
                 key={
                   stat.title
                 }
+                data-scroll-reveal="card"
                 className="
                   group
                   relative
@@ -257,12 +258,11 @@ export default async function UsersPage({
                   p-5
                   transition-all
                   duration-300
-                  hover:-translate-y-0.5
                   hover:border-foreground/15
                   hover:shadow-lg
                 "
               >
-                <div className="absolute -right-8 -top-8 size-24 rounded-full bg-primary/5 blur-2xl transition group-hover:bg-primary/10" />
+                <div data-scroll-parallax="14" className="pointer-events-none absolute -right-8 -top-8 size-24 rounded-full bg-primary/5 blur-2xl transition group-hover:bg-primary/10" />
 
                 <div className="relative flex items-start justify-between">
                   <div>
