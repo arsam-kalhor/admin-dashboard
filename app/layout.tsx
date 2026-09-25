@@ -71,6 +71,16 @@ export const metadata: Metadata = {
     description:
       "Manage users, products, inventory and your business from one clean and modern dashboard.",
 
+    images: [
+      {
+        url: "/dabe-opengraph-v2.png",
+        width: 1983,
+        height: 793,
+        alt: "Dabe modern admin dashboard preview",
+        type: "image/png",
+      },
+    ],
+
   },
 
   twitter: {
@@ -82,6 +92,15 @@ export const metadata: Metadata = {
 
     description:
       "Manage users, products, inventory and your business from one clean and modern dashboard.",
+
+    images: [
+      {
+        url: "/dabe-twitter-v2.png",
+        width: 1200,
+        height: 630,
+        alt: "Dabe modern admin dashboard preview",
+      },
+    ],
 
   },
 
